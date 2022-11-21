@@ -1,18 +1,21 @@
 const request = require('request');
-const myArgs = process.argv.slice(2);
-const API = 'https://api.thecatapi.com/v1/breeds/search?q=' + myArgs[0];
 
-request(API, (error, response, body) => {
-  console.log('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+const fetchBreedDescription = function(breedName, callback) {
+  const API = 'https://api.thecatapi.com/v1/breeds/search?q=' + breedName;
   
-  const data = JSON.parse(body);
-  if (data.length > 0) {
-    console.log(data[0].description);
-  } else {
-    console.log('Breed not found, sorry, miawwwwww');
-  }
+  request(API, (error, response, body) => {
+    const data = JSON.parse(body);
+    if (data.length > 0) {
+      callback(null, data[0].description);
+    } else {
+      callback('Breed not found, sorry, miawwwwww', null);
+    }
+  });
+};
+fetchBreedDescription('Siberian', (error, description) => {
 });
+
+module.exports = { fetchBreedDescription };
 
 
 
